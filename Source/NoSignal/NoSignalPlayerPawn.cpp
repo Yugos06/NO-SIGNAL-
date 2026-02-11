@@ -157,6 +157,6 @@ void ANoSignalPlayerPawn::PrintControlHints() const
         return;
     }
 
-    GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor(190, 190, 190), TEXT("Move: WASD + Mouse"));
+    GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor(190, 190, 190), TEXT("Move: ZQSD + Mouse (AZERTY)"));
     GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor(190, 190, 190), TEXT("Actions: TAB Scan | E Repair | F Boost Hub | R Rest | 1-4 Travel"));
 }

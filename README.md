@@ -22,7 +22,7 @@ Prototype Unreal Engine (C++) du jeu "No Signal".
 
 ## Controls
 
-- Deplacement: `WASD` + souris
+- Deplacement: `ZQSD` + souris (AZERTY)
 - `Tab`: scan
 - `E`: repair relay courant
 - `F`: boost hub
