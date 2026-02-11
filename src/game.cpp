@@ -14,7 +14,7 @@ std::string relayState(const Relay& relay) {
     return relay.online ? "ONLINE" : "OFFLINE";
 }
 
-} // namespace
+} 
 
 Game::Game() : rng_(std::random_device{}()) {
     relays_ = {
@@ -289,7 +289,7 @@ int Game::computeSignal() const {
     const int averageRelay = stabilitySum / static_cast<int>(relays_.size());
     int signal = (averageRelay * 65 + hubCharge_ * 35) / 100;
 
-    // Heavy penalty when multiple relays are down.
+    
     signal -= (static_cast<int>(relays_.size()) - onlineCount) * 7;
     return clamp100(signal);
 }
