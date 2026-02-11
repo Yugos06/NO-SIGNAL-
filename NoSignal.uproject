@@ -1,0 +1,13 @@
+{
+    "FileVersion": 3,
+    "EngineAssociation": "5.3",
+    "Category": "",
+    "Description": "No Signal Unreal Engine prototype",
+    "Modules": [
+        {
+            "Name": "NoSignal",
+            "Type": "Runtime",
+            "LoadingPhase": "Default"
+        }
+    ]
+}
