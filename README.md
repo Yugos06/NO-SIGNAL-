@@ -13,6 +13,18 @@ Prototype Unreal Engine (C++) du jeu "No Signal".
 <UE5_ROOT>/Engine/Build/BatchFiles/Linux/GenerateProjectFiles.sh -project="$PWD/NoSignal.uproject" -game
 ```
 
+## Team Rules Setup (obligatoire)
+
+Appliquer les memes regles locales pour tout le staff:
+
+```bash
+./scripts/setup_hooks.sh
+```
+
+Documentation complete:
+- `CONTRIBUTING.md`
+- `.github/workflows/repo-rules.yml`
+
 ## Current Gameplay (V0.1 UE)
 
 - Boucle de jeu tour par tour dans `ANoSignalGameModeBase`.

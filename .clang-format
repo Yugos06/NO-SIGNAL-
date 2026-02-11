@@ -1,0 +1,24 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 120
+BreakBeforeBraces: Allman
+PointerAlignment: Left
+ReferenceAlignment: Left
+SpaceBeforeParens: ControlStatements
+SortIncludes: Never
+IncludeBlocks: Preserve
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+ReflowComments: false
+StatementMacros:
+  - UCLASS
+  - USTRUCT
+  - UENUM
+  - UINTERFACE
+  - UPROPERTY
+  - UFUNCTION
+  - GENERATED_BODY

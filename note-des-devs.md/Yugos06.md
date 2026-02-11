@@ -18,10 +18,10 @@
 - [ ] Importer et brancher les assets du dossier `projet no signal/`
 
 ### Outils / qualite
-- [ ] Ajouter `.editorconfig`
-- [ ] Ajouter `.clang-format`
-- [ ] Ajouter `.clang-tidy`
-- [ ] Ajouter la config `.vscode/` (launch, tasks, settings, c_cpp_properties, extensions)
+- [x] Ajouter `.editorconfig`
+- [x] Ajouter `.clang-format`
+- [x] Ajouter `.clang-tidy`
+- [x] Ajouter la config `.vscode/` (launch, tasks, settings, c_cpp_properties, extensions)
 
 ### Legacy (optionnel)
 - [ ] Garder ou supprimer le prototype terminal (`src/`, `build/`, CMake) selon la direction du projet
@@ -74,9 +74,9 @@
 - [ ] README a jour avec les vraies etapes
 
 ## Regles d equipe
-- [ ] Commits courts et clairs (prefixes: `feat:`, `fix:`, `chore:`, `docs:`)
+- [x] Commits courts et clairs (prefixes imposes via hooks/CI)
 - [ ] Une tache = une branche
-- [ ] Pas de commit de fichiers temporaires Unreal (`Intermediate`, `Saved`, `Binaries`)
+- [x] Pas de commit de fichiers temporaires Unreal (`Intermediate`, `Saved`, `Binaries`)
 - [ ] Toujours tester avant push
 - [ ] Mettre a jour cette note a chaque session
 

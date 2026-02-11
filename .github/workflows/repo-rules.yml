@@ -1,0 +1,71 @@
+name: Repo Rules
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  commit-messages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check commit messages on pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          scripts/check_commit_messages_range.sh "origin/${{ github.base_ref }}..HEAD"
+
+      - name: Check commit messages on push
+        if: github.event_name == 'push'
+        run: |
+          before="${{ github.event.before }}"
+          if [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            tmp="$(mktemp)"
+            git log -1 --format=%s HEAD > "$tmp"
+            scripts/check_commit_message.sh "$tmp"
+            rm -f "$tmp"
+          else
+            scripts/check_commit_messages_range.sh "$before..${{ github.sha }}"
+          fi
+
+  repo-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check forbidden tracked paths
+        run: scripts/check_repo_rules.sh all
+
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+
+      - name: Check clang-format
+        run: scripts/check_format.sh all
+
+  legacy-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure legacy CMake prototype
+        run: cmake -S . -B build
+
+      - name: Build legacy CMake prototype
+        run: cmake --build build

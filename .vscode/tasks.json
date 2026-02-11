@@ -1,0 +1,54 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Legacy: Configure CMake",
+      "type": "shell",
+      "command": "cmake -S . -B build",
+      "group": "build",
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Legacy: Build Prototype",
+      "type": "shell",
+      "command": "cmake --build build",
+      "dependsOn": [
+        "Legacy: Configure CMake"
+      ],
+      "group": "build",
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Legacy: Run Prototype",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/no_signal",
+      "dependsOn": [
+        "Legacy: Build Prototype"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "UE: Generate Project Files (Linux)",
+      "type": "shell",
+      "command": "${env:UE5_ROOT}/Engine/Build/BatchFiles/Linux/GenerateProjectFiles.sh",
+      "args": [
+        "-project=${workspaceFolder}/NoSignal.uproject",
+        "-game"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "UE: Open Editor (Linux)",
+      "type": "shell",
+      "command": "${env:UE5_ROOT}/Engine/Binaries/Linux/UnrealEditor",
+      "args": [
+        "${workspaceFolder}/NoSignal.uproject"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

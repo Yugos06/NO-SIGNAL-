@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+scripts/check_commit_message.sh "$1"

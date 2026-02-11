@@ -1,0 +1,25 @@
+{
+  "editor.formatOnSave": true,
+  "files.trimTrailingWhitespace": true,
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "[c]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "C_Cpp.clang_format_style": "file",
+  "C_Cpp.default.cppStandard": "c++20",
+  "C_Cpp.default.cStandard": "c17",
+  "C_Cpp.intelliSenseEngine": "default",
+  "files.associations": {
+    "*.Build.cs": "csharp",
+    "*.Target.cs": "csharp",
+    "*.uproject": "json"
+  },
+  "files.exclude": {
+    "**/Binaries": true,
+    "**/DerivedDataCache": true,
+    "**/Intermediate": true,
+    "**/Saved": true
+  }
+}
