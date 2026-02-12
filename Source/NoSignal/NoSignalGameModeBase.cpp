@@ -23,8 +23,11 @@ void ANoSignalGameModeBase::BeginPlay()
     HubCharge = 30;
     CurrentRelayIndex = 0;
     bGameOver = false;
+    bBunkerUnlocked = false;
+    bLoreRevealed = false;
 
     InitRelays();
+    InitStoryState();
 
     RelayActors.Empty();
     for (TActorIterator<ASignalRelayActor> It(GetWorld()); It; ++It)
@@ -75,6 +78,10 @@ bool ANoSignalGameModeBase::ScanNetwork()
     }
 
     LogAndScreen(TEXT("Scan complete. Check Output Log for sector diagnostics."), FColor::White, 4.0f);
+    if (bBunkerUnlocked && !bLoreRevealed && CurrentRelayIndex == 3)
+    {
+        TriggerLoreReveal();
+    }
     AdvanceTurn();
     return true;
 }
@@ -243,7 +250,7 @@ FString ANoSignalGameModeBase::BuildHudStatus() const
         : TEXT("Unknown");
 
     return FString::Printf(
-        TEXT("Turn %d/%d | Energy %d | Spare %d | Batteries %d | Core %d | Signal %d | Sector %s"),
+        TEXT("Turn %d/%d | Energy %d | Spare %d | Batteries %d | Core %d | Signal %d | Sector %s | Obj: %s"),
         Turn,
         MaxTurns,
         Energy,
@@ -251,7 +258,8 @@ FString ANoSignalGameModeBase::BuildHudStatus() const
         BatteryPacks,
         HubCharge,
         ComputeSignal(),
-        *RelayName);
+        *RelayName,
+        *CurrentObjective);
 }
 
 int32 ANoSignalGameModeBase::Clamp100(const int32 Value) const
@@ -302,6 +310,60 @@ void ANoSignalGameModeBase::InitRelays()
     RelayStates.Add(West);
 }
 
+void ANoSignalGameModeBase::InitStoryState()
+{
+    StoryPhase = EMarsStoryPhase::RestorePower;
+    bBunkerUnlocked = false;
+    bLoreRevealed = false;
+    CurrentObjective = TEXT("Restore power to unlock the bunker gate relay (Signal >= 85 and at least 3 sectors online).");
+}
+
+void ANoSignalGameModeBase::UpdateStoryState()
+{
+    if (!bBunkerUnlocked)
+    {
+        const int32 Signal = ComputeSignal();
+        const int32 OnlineCount = GetOnlineRelayCount();
+        if (Signal >= 85 && OnlineCount >= 3)
+        {
+            bBunkerUnlocked = true;
+            StoryPhase = EMarsStoryPhase::ReachBunker;
+            CurrentObjective = TEXT("Bunker gate unlocked. Travel to Bunker Gate Relay and scan to access the archive.");
+            LogAndScreen(TEXT("Power restored. Bunker gate relay is now unlocked."), FColor::Green, 6.0f);
+            return;
+        }
+    }
+
+    if (!bLoreRevealed)
+    {
+        if (bBunkerUnlocked && CurrentRelayIndex == 3)
+        {
+            CurrentObjective = TEXT("At bunker gate relay. Run a scan to decode and unlock archive access.");
+        }
+        else if (bBunkerUnlocked)
+        {
+            CurrentObjective = TEXT("Travel to Bunker Gate Relay and run a scan to access the archive.");
+        }
+    }
+}
+
+void ANoSignalGameModeBase::TriggerLoreReveal()
+{
+    if (bLoreRevealed)
+    {
+        return;
+    }
+
+    bLoreRevealed = true;
+    StoryPhase = EMarsStoryPhase::ArchiveRevealed;
+    CurrentObjective = TEXT("Archive decrypted. Transmit proof of the ancient Martian civilization.");
+
+    LogAndScreen(
+        TEXT("Archive entry: The old civilization collapsed after contact with a signal-borne entity."),
+        FColor(180, 220, 255),
+        8.0f);
+}
+
 void ANoSignalGameModeBase::AdvanceTurn()
 {
     if (bGameOver)
@@ -309,6 +371,7 @@ void ANoSignalGameModeBase::AdvanceTurn()
         return;
     }
 
+    UpdateStoryState();
     SyncActorsFromState();
 
     if (CheckEndConditions())
@@ -319,6 +382,7 @@ void ANoSignalGameModeBase::AdvanceTurn()
     RandomEvent();
     Turn += 1;
 
+    UpdateStoryState();
     SyncActorsFromState();
     CheckEndConditions();
 
@@ -393,15 +457,14 @@ void ANoSignalGameModeBase::RandomEvent()
 
 bool ANoSignalGameModeBase::CheckEndConditions()
 {
-    const int32 Signal = ComputeSignal();
-    const int32 OnlineCount = GetOnlineRelayCount();
-
-    if (Signal >= 85 && OnlineCount >= 3)
+    if (bLoreRevealed)
     {
         bGameOver = true;
-        LogAndScreen(TEXT("Victory: bunker gate unlocked. The archive reveals an ancient Martian civilization."), FColor::Green, 10.0f);
+        LogAndScreen(TEXT("Victory: archive recovered. You confirm an ancient Martian civilization."), FColor::Green, 10.0f);
         return true;
     }
+
+    const int32 Signal = ComputeSignal();
 
     if (Turn > MaxTurns)
     {

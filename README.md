@@ -36,7 +36,10 @@ Documentation complete:
 - Boucle de jeu tour par tour dans `ANoSignalGameModeBase`:
   scan, travel sector, repair node, boost core, rest.
 - Evenements aleatoires a chaque tour (pulses, leaks, crates).
-- Objectif narratif: ouvrir le bunker et atteindre les archives.
+- Objectif narratif:
+  1) restaurer le signal pour deverrouiller la porte du bunker
+  2) aller au `Bunker Gate Relay` (sector 4)
+  3) lancer un scan pour reveler les archives (victoire)
 
 ## Controls
 

@@ -7,6 +7,15 @@
 class ANoSignalPlayerPawn;
 class ASignalRelayActor;
 
+UENUM(BlueprintType)
+enum class EMarsStoryPhase : uint8
+{
+    CrashSurvival UMETA(DisplayName = "Crash Survival"),
+    RestorePower UMETA(DisplayName = "Restore Power"),
+    ReachBunker UMETA(DisplayName = "Reach Bunker"),
+    ArchiveRevealed UMETA(DisplayName = "Archive Revealed")
+};
+
 USTRUCT(BlueprintType)
 struct FRelayState
 {
@@ -59,6 +68,18 @@ public:
     UFUNCTION(BlueprintPure, Category = "NoSignal|State")
     FString BuildHudStatus() const;
 
+    UFUNCTION(BlueprintPure, Category = "NoSignal|Story")
+    FString GetCurrentObjective() const { return CurrentObjective; }
+
+    UFUNCTION(BlueprintPure, Category = "NoSignal|Story")
+    EMarsStoryPhase GetStoryPhase() const { return StoryPhase; }
+
+    UFUNCTION(BlueprintPure, Category = "NoSignal|Story")
+    bool IsBunkerUnlocked() const { return bBunkerUnlocked; }
+
+    UFUNCTION(BlueprintPure, Category = "NoSignal|Story")
+    bool IsLoreRevealed() const { return bLoreRevealed; }
+
     UFUNCTION(BlueprintPure, Category = "NoSignal|State")
     bool IsGameOver() const { return bGameOver; }
 
@@ -89,6 +110,18 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "NoSignal|State")
     bool bGameOver = false;
 
+    UPROPERTY(BlueprintReadOnly, Category = "NoSignal|Story")
+    EMarsStoryPhase StoryPhase = EMarsStoryPhase::CrashSurvival;
+
+    UPROPERTY(BlueprintReadOnly, Category = "NoSignal|Story")
+    FString CurrentObjective = TEXT("");
+
+    UPROPERTY(BlueprintReadOnly, Category = "NoSignal|Story")
+    bool bBunkerUnlocked = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = "NoSignal|Story")
+    bool bLoreRevealed = false;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NoSignal|Debug")
     bool bPrintOnScreen = true;
 
@@ -104,6 +137,9 @@ private:
     const FRelayState* GetRelayStateByIndex(int32 Index) const;
 
     void InitRelays();
+    void InitStoryState();
+    void UpdateStoryState();
+    void TriggerLoreReveal();
     void AdvanceTurn();
     void RandomEvent();
     bool CheckEndConditions();

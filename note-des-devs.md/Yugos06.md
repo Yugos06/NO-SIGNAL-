@@ -14,6 +14,7 @@
 - [x] Completer le `README.md`
 - [x] Completer le `.gitignore`
 - [x] Initialiser la base Unreal (`NoSignal.uproject`, `Source/`, `Config/`)
+- [x] Integrer un state narratif C++ (bunker unlock + lore reveal)
 
 ### A faire prioritaire (Unreal)
 - [ ] Ouvrir `NoSignal.uproject` et verifier la compilation du module C++
