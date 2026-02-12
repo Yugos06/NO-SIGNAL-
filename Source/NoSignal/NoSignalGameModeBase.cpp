@@ -47,8 +47,8 @@ void ANoSignalGameModeBase::BeginPlay()
 
     SyncActorsFromState();
 
-    LogAndScreen(TEXT("NO SIGNAL V0.1 UE - Survive and restore signal before turn limit."), FColor(60, 180, 255), 8.0f);
-    LogAndScreen(TEXT("Controls: TAB Scan | E Repair | F Boost Hub | R Rest | 1-4 Travel"), FColor(190, 190, 190), 8.0f);
+    LogAndScreen(TEXT("NO SIGNAL // MARS INCIDENT - Your shuttle crashed. Restore power and reach the bunker."), FColor(60, 180, 255), 8.0f);
+    LogAndScreen(TEXT("Controls: TAB Scan | E Repair Node | F Boost Core | R Rest | 1-4 Move Sector"), FColor(190, 190, 190), 8.0f);
     LogAndScreen(BuildHudStatus(), FColor::Yellow, 8.0f);
 }
 
@@ -59,7 +59,7 @@ bool ANoSignalGameModeBase::ScanNetwork()
         return false;
     }
 
-    UE_LOG(LogNoSignal, Log, TEXT("Network scan:"));
+    UE_LOG(LogNoSignal, Log, TEXT("Mars outpost scan:"));
     for (int32 i = 0; i < RelayStates.Num(); ++i)
     {
         const FRelayState& Relay = RelayStates[i];
@@ -74,7 +74,7 @@ bool ANoSignalGameModeBase::ScanNetwork()
             Relay.Interference);
     }
 
-    LogAndScreen(TEXT("Scan complete. See Output Log for detailed relay stats."), FColor::White, 4.0f);
+    LogAndScreen(TEXT("Scan complete. Check Output Log for sector diagnostics."), FColor::White, 4.0f);
     AdvanceTurn();
     return true;
 }
@@ -89,7 +89,7 @@ bool ANoSignalGameModeBase::TravelToRelay(const int32 NewRelayIndex)
     bool bSuccess = false;
     if (!RelayStates.IsValidIndex(NewRelayIndex))
     {
-        LogAndScreen(TEXT("Invalid relay index."), FColor::Red, 4.0f);
+        LogAndScreen(TEXT("Invalid sector index."), FColor::Red, 4.0f);
     }
     else if (Energy < 5)
     {
@@ -97,7 +97,7 @@ bool ANoSignalGameModeBase::TravelToRelay(const int32 NewRelayIndex)
     }
     else if (NewRelayIndex == CurrentRelayIndex)
     {
-        LogAndScreen(TEXT("Already at that relay."), FColor(190, 190, 190), 4.0f);
+        LogAndScreen(TEXT("Already in that sector."), FColor(190, 190, 190), 4.0f);
     }
     else
     {
@@ -122,11 +122,11 @@ bool ANoSignalGameModeBase::RepairCurrentRelay()
     FRelayState* Relay = GetRelayStateByIndex(CurrentRelayIndex);
     if (!Relay)
     {
-        LogAndScreen(TEXT("No active relay selected."), FColor::Red, 4.0f);
+        LogAndScreen(TEXT("No active sector selected."), FColor::Red, 4.0f);
     }
     else if (Energy < 12 || SpareParts <= 0)
     {
-        LogAndScreen(TEXT("Cannot repair: missing energy or spare parts."), FColor::Red, 4.0f);
+        LogAndScreen(TEXT("Cannot repair node: missing energy or spare parts."), FColor::Red, 4.0f);
     }
     else
     {
@@ -140,7 +140,7 @@ bool ANoSignalGameModeBase::RepairCurrentRelay()
         Relay->bOnline = Relay->Stability >= 35;
 
         LogAndScreen(
-            FString::Printf(TEXT("%s repaired: +%d stability, -%d interference."), *Relay->Name, Gain, Clean),
+            FString::Printf(TEXT("%s node repaired: +%d stability, -%d interference."), *Relay->Name, Gain, Clean),
             FColor::Green,
             4.0f);
 
@@ -161,7 +161,7 @@ bool ANoSignalGameModeBase::BoostHub()
     bool bSuccess = false;
     if (BatteryPacks <= 0 || Energy < 10)
     {
-        LogAndScreen(TEXT("Cannot boost: need 1 battery pack and 10 energy."), FColor::Red, 4.0f);
+        LogAndScreen(TEXT("Cannot boost bunker core: need 1 battery pack and 10 energy."), FColor::Red, 4.0f);
     }
     else
     {
@@ -169,7 +169,7 @@ bool ANoSignalGameModeBase::BoostHub()
         BatteryPacks -= 1;
         Energy -= 10;
         HubCharge = Clamp100(HubCharge + Gain);
-        LogAndScreen(FString::Printf(TEXT("Hub boosted by +%d."), Gain), FColor::Green, 4.0f);
+        LogAndScreen(FString::Printf(TEXT("Bunker core boosted by +%d."), Gain), FColor::Green, 4.0f);
         bSuccess = true;
     }
 
@@ -190,7 +190,7 @@ bool ANoSignalGameModeBase::Rest()
     Energy = Clamp100(Energy + Recover);
     HubCharge = Clamp100(HubCharge - HubLoss);
     LogAndScreen(
-        FString::Printf(TEXT("Rested: +%d energy, -%d hub charge."), Recover, HubLoss),
+        FString::Printf(TEXT("You hide in the wreck: +%d energy, -%d bunker core charge."), Recover, HubLoss),
         FColor(190, 190, 190),
         4.0f);
 
@@ -243,7 +243,7 @@ FString ANoSignalGameModeBase::BuildHudStatus() const
         : TEXT("Unknown");
 
     return FString::Printf(
-        TEXT("Turn %d/%d | Energy %d | Spare %d | Batteries %d | Hub %d | Signal %d | Relay %s"),
+        TEXT("Turn %d/%d | Energy %d | Spare %d | Batteries %d | Core %d | Signal %d | Sector %s"),
         Turn,
         MaxTurns,
         Energy,
@@ -274,28 +274,28 @@ void ANoSignalGameModeBase::InitRelays()
     RelayStates.Empty();
 
     FRelayState North;
-    North.Name = TEXT("North Tower");
+    North.Name = TEXT("Crash Site Beacon");
     North.Stability = 50;
     North.Interference = 12;
     North.bOnline = true;
     RelayStates.Add(North);
 
     FRelayState East;
-    East.Name = TEXT("East Tower");
+    East.Name = TEXT("Canyon Repeater");
     East.Stability = 40;
     East.Interference = 20;
     East.bOnline = true;
     RelayStates.Add(East);
 
     FRelayState South;
-    South.Name = TEXT("South Tower");
+    South.Name = TEXT("Ancient Dig Array");
     South.Stability = 35;
     South.Interference = 22;
     South.bOnline = false;
     RelayStates.Add(South);
 
     FRelayState West;
-    West.Name = TEXT("West Tower");
+    West.Name = TEXT("Bunker Gate Relay");
     West.Stability = 30;
     West.Interference = 28;
     West.bOnline = false;
@@ -352,7 +352,7 @@ void ANoSignalGameModeBase::RandomEvent()
         }
 
         LogAndScreen(
-            FString::Printf(TEXT("[Event] Distortion spike at %s (+%d interference)."), *Relay.Name, InterferenceGain),
+            FString::Printf(TEXT("[Event] Unknown entity pulse at %s (+%d interference)."), *Relay.Name, InterferenceGain),
             FColor(255, 165, 40),
             4.0f);
     }
@@ -360,7 +360,7 @@ void ANoSignalGameModeBase::RandomEvent()
     {
         const int32 Loss = FMath::RandRange(4, 12);
         HubCharge = Clamp100(HubCharge - Loss);
-        LogAndScreen(FString::Printf(TEXT("[Event] Central hub leak (-%d charge)."), Loss), FColor(255, 165, 40), 4.0f);
+        LogAndScreen(FString::Printf(TEXT("[Event] Bunker core leak (-%d charge)."), Loss), FColor(255, 165, 40), 4.0f);
     }
     else if (EventRoll < 92)
     {
@@ -382,12 +382,12 @@ void ANoSignalGameModeBase::RandomEvent()
             WeakestRelay.bOnline = true;
         }
 
-        LogAndScreen(FString::Printf(TEXT("[Event] Civilians patched %s."), *WeakestRelay.Name), FColor(80, 220, 120), 4.0f);
+        LogAndScreen(FString::Printf(TEXT("[Event] Old maintenance drones patched %s."), *WeakestRelay.Name), FColor(80, 220, 120), 4.0f);
     }
     else
     {
         SpareParts += 1;
-        LogAndScreen(TEXT("[Event] You found an abandoned spare part cache."), FColor(80, 220, 120), 4.0f);
+        LogAndScreen(TEXT("[Event] You found a sealed crate in the ruins."), FColor(80, 220, 120), 4.0f);
     }
 }
 
@@ -399,28 +399,28 @@ bool ANoSignalGameModeBase::CheckEndConditions()
     if (Signal >= 85 && OnlineCount >= 3)
     {
         bGameOver = true;
-        LogAndScreen(TEXT("Victory: the city is back online."), FColor::Green, 10.0f);
+        LogAndScreen(TEXT("Victory: bunker gate unlocked. The archive reveals an ancient Martian civilization."), FColor::Green, 10.0f);
         return true;
     }
 
     if (Turn > MaxTurns)
     {
         bGameOver = true;
-        LogAndScreen(TEXT("Defeat: time is up. The network collapsed."), FColor::Red, 10.0f);
+        LogAndScreen(TEXT("Defeat: oxygen reserves depleted before reaching the bunker."), FColor::Red, 10.0f);
         return true;
     }
 
     if (Signal <= 10 && Turn > 3)
     {
         bGameOver = true;
-        LogAndScreen(TEXT("Defeat: signal fully lost. No recovery possible."), FColor::Red, 10.0f);
+        LogAndScreen(TEXT("Defeat: signal lost. Something in the storm found you first."), FColor::Red, 10.0f);
         return true;
     }
 
     if (Energy <= 0 && SpareParts <= 0 && BatteryPacks <= 0)
     {
         bGameOver = true;
-        LogAndScreen(TEXT("Defeat: no resources left to continue."), FColor::Red, 10.0f);
+        LogAndScreen(TEXT("Defeat: no resources left. The dark swallowed the outpost."), FColor::Red, 10.0f);
         return true;
     }
 

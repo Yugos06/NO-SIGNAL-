@@ -2,4 +2,13 @@
 set -euo pipefail
 
 scripts/check_repo_rules.sh staged
-scripts/check_format.sh staged
+
+# If clang-format is not installed locally, do not block commits.
+# Formatting is still enforced in CI.
+rc=0
+scripts/check_format.sh staged || rc=$?
+if [[ $rc -eq 2 ]]; then
+  echo "[WARN] Local formatting check skipped (clang-format missing)."
+elif [[ $rc -ne 0 ]]; then
+  exit $rc
+fi

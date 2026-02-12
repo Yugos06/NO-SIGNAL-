@@ -2,6 +2,12 @@
 
 ## Checklist projet No Signal
 
+## Direction validee (staff)
+- Genre: horreur sci-fi.
+- Setup: crash de fusee sur Mars, 1 survivant.
+- Arc principal: restaurer les noeuds, ouvrir le bunker, decouvrir le lore d'une ancienne civilisation.
+- Livrable prioritaire: build Windows `.exe` jouable (Win64 Shipping).
+
 ### Deja fait
 - [x] Compiler une base C++ du projet
 - [x] Ajouter un `CMakeLists.txt` (prototype legacy)
@@ -16,6 +22,10 @@
 - [ ] Tester les controles AZERTY (`ZQSD`, `Tab`, `E`, `F`, `R`, `1-4`)
 - [ ] Ajouter un vrai HUD (UMG) au lieu des messages debug ecran
 - [ ] Importer et brancher les assets du dossier `projet no signal/`
+- [ ] Crasher visuellement la fusee dans le decor (point de depart joueur)
+- [ ] Designer le bunker (porte fermee puis deverrouillage via objectif gameplay)
+- [ ] Ajouter un chemin narratif vers le bunker (indices visuels + audio)
+- [ ] Packager en `Win64 Shipping` et valider le `.exe`
 
 ### Outils / qualite
 - [x] Ajouter `.editorconfig`
@@ -31,7 +41,7 @@
 
 ## Vision de la V0.2
 - Objectif: un prototype Unreal jouable de bout en bout en moins de 10 minutes.
-- Boucle de jeu cible: se deplacer, choisir un relais, reparer, gerer ressources, survivre aux evenements.
+- Boucle de jeu cible: survivre au crash, restaurer les noeuds, ouvrir le bunker, declencher revelation lore.
 - Feeling cible: tension + lisibilite, pas de confusion sur "quoi faire ensuite".
 
 ## Backlog gameplay (detail)
@@ -42,6 +52,7 @@
 - [ ] Ajouter un tutoriel rapide en debut de partie (3 etapes max)
 - [ ] Ajouter une difficulte `Normal` et `Hard`
 - [ ] Ajouter un systeme de score final (temps, ressources restantes, signal final)
+- [ ] Ajouter 3 etapes lore dans le bunker (terminal/audio/log)
 
 ## Backlog technique (detail)
 - [ ] Convertir les messages debug en UI Widget centralisee
@@ -54,16 +65,17 @@
 
 ## Backlog art/audio
 - [ ] Import FBX perso + corriger echelle/orientation dans Unreal
-- [ ] Definir un style visuel simple (couleur online/offline + brouillard)
+- [ ] Definir un style visuel horreur Mars (poussiere rouge, obscurite, lumiere instable)
 - [ ] Ajouter 3 sons minimum (repair, alerte, victoire/defaite)
 - [ ] Ajouter une ambiance sonore legere en fond
 - [ ] Ajouter VFX simple pour "distortion spike"
+- [ ] Ajouter son de creature/entite hors-champ (pression psychologique)
 
 ## Planning propose
 - [ ] Session 1: setup map + relais + verification input AZERTY
-- [ ] Session 2: HUD UMG + messages etats + ecrans fin de partie
-- [ ] Session 3: import assets, ambiance, polish gameplay
-- [ ] Session 4: bugfix, test complet, freeze V0.2
+- [ ] Session 2: setup crash site + bunker + trajet narratif
+- [ ] Session 3: HUD UMG + ecrans fin de partie + beats lore
+- [ ] Session 4: audio/VFX + bugfix + build `.exe` + freeze V0.2
 
 ## Check QA avant merge
 - [ ] Build C++ passe sans erreur
@@ -72,6 +84,7 @@
 - [ ] HUD lisible en 1080p
 - [ ] Les 4 relais repondent bien a leur index
 - [ ] README a jour avec les vraies etapes
+- [ ] Packaging `Win64 Shipping` genere un `.exe` launchable sur une autre machine
 
 ## Regles d equipe
 - [x] Commits courts et clairs (prefixes imposes via hooks/CI)
