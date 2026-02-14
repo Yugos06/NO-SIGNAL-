@@ -21,5 +21,6 @@
     "**/DerivedDataCache": true,
     "**/Intermediate": true,
     "**/Saved": true
-  }
+  },
+  "chatgpt.openOnStartup": false
 }
