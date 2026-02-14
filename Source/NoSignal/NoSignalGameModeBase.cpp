@@ -35,17 +35,14 @@ void ANoSignalGameModeBase::BeginPlay()
         RelayActors.Add(*It);
     }
 
-    RelayActors.Sort([](const TObjectPtr<ASignalRelayActor>& A, const TObjectPtr<ASignalRelayActor>& B)
+    RelayActors.RemoveAll([](const TObjectPtr<ASignalRelayActor>& RelayActor)
     {
-        if (!A)
-        {
-            return false;
-        }
-        if (!B)
-        {
-            return true;
-        }
-        return A->RelayIndex < B->RelayIndex;
+        return !IsValid(RelayActor);
+    });
+
+    RelayActors.Sort([](const ASignalRelayActor& A, const ASignalRelayActor& B)
+    {
+        return A.RelayIndex < B.RelayIndex;
     });
 
     SyncActorsFromState();
